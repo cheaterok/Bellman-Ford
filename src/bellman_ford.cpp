@@ -74,8 +74,7 @@ void solve() {
 }
 
 
-vector<int> parseNextRow(istream& str)
-{
+vector<int> parseNextRow(istream& str) {
     vector<int> result;
     string line;
     getline(str,line);
@@ -91,6 +90,11 @@ vector<int> parseNextRow(istream& str)
 
 
 int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        cout << "Usage: ./bellman_ford input_file" << endl;
+        return 1;
+    }
+
     ifstream input_file;
 
     input_file.open(argv[1], ios::out);
