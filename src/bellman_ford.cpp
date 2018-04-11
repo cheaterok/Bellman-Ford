@@ -33,21 +33,6 @@ int n, m, v, t;
 vector<edge> e;
 const int INF = numeric_limits<int>::max();
 
-vector<int> parseNextRow(istream& str)
-{
-    vector<int> result;
-    string line;
-    getline(str,line);
-
-    stringstream lineStream(line);
-    string cell;
-
-    while(getline(lineStream, cell, ','))
-        result.push_back(stoi(cell));
-
-    return result;
-}
-
 
 void solve() {
     vector<int> d (n, INF);
@@ -61,7 +46,7 @@ void solve() {
     #pragma omp parallel for
         for (int j=0; j<m; j++)
             if (d[e[j].a] < INF) {
-                sleep(1);
+                //sleep(1);
                 if (d[e[j].b] > d[e[j].a] + e[j].cost) {
                     d[e[j].b] = d[e[j].a] + e[j].cost;
                     p[e[j].b] = e[j].a;
@@ -89,10 +74,26 @@ void solve() {
 }
 
 
-int main() {
+vector<int> parseNextRow(istream& str)
+{
+    vector<int> result;
+    string line;
+    getline(str,line);
+
+    stringstream lineStream(line);
+    string cell;
+
+    while(getline(lineStream, cell, ','))
+        result.push_back(stoi(cell));
+
+    return result;
+}
+
+
+int main(int argc, char* argv[]) {
     ifstream input_file;
 
-    input_file.open("input", ios::out);
+    input_file.open(argv[1], ios::out);
     if (!input_file.is_open()) {
         cout << "Could not open input file." << endl;
         return -1;
@@ -102,8 +103,13 @@ int main() {
     n = task_info[0]; m = task_info[1]; v = task_info[2]; t = task_info[3];
 
     while (!input_file.eof()) {
+        // Когда остаётся пустая строка - это ещё не eof
+        // и parseNextRow пойдёт её парсить.
+        // Проверка размера возвращаемого вектора - быстрый костыль,
+        // чтобы избежать сегфолта при попытке разобрать пустой вектор.
         auto result = parseNextRow(input_file);
-        e.push_back({result[0], result[1], result[2]});
+        if (result.size() != 0)
+            e.push_back({result[0], result[1], result[2]});
     }
 
     solve();
