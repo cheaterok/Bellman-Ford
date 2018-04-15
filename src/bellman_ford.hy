@@ -1,4 +1,5 @@
 ; vim: set syntax=clojure:
+(import csv)
 (import math)
 (import [collections [namedtuple]])
 (import [functools [partial]])
@@ -68,20 +69,15 @@
     
     (-> [(get paths end-node)] get-next reversed))
 
+(defn read-graph [filename]
+    "Считывает граф из .csv файла (см. формат в README)"
+    (with [f (open filename "rt" :newline "")]
+        (as-> (csv.reader f) it 
+            (map (fn [row] (list (map int row))) it)
+            [#*(first it) (->> (rest it) (*map Edge) list)])))
+
 (defmain [&rest args]
-    ; Кол-во вершин, начальная и конечная вершины
-    (setv [nodes-num start-node end-node] [6 0 3])
-    ; Список вершин
-    (setv edges
-        (list-comp (Edge #* row) [row
-        [[0 1 10]
-         [0 5 8]
-         [1 3 2]
-         [2 1 1]
-         [3 2 -2]
-         [4 1 -4]
-         [4 3 -1]
-         [5 4 1]]]))
+    (setv [nodes-num _ start-node end-node edges] (read-graph (get args 1)))
     ; Список граней для каждой вершины
     (setv edges-list (edges-for-nodes nodes-num edges))
 
