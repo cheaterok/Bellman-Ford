@@ -66,8 +66,8 @@
         (if (= next-val start-node)
             path-list
             (get-next path-list)))
-    
-    (-> [(get paths end-node)] get-next reversed))
+    ; Формируем список путей и не забываем добавить финишную ноду в конец
+    [#*(-> [(get paths end-node)] get-next reversed) end-node])
 
 (defn read-graph [filename]
     "Считывает граф из .csv файла (см. формат в README)"
