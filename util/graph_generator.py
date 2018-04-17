@@ -10,7 +10,7 @@ class Matrix:
         self.connections_num = connections_num
 
 
-def generate_graph_matrix(n):
+def generate_graph_matrix(n, edge_chance):
     # Матрица n*n
     mat = [[0 for _ in range(n)] for _ in range(n)]
 
@@ -21,7 +21,7 @@ def generate_graph_matrix(n):
             if i == j:
                 continue
             connection_weight = None
-            if random.random() <= 1/5:
+            if random.random() <= edge_chance:
                 connections += 1
                 mat[i][j]= random.randint(1, 10)
 
@@ -43,6 +43,7 @@ def save_graph_from_matrix(matrix, file, start, end):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Generate graph.")
     parser.add_argument('nodes', type=int, help="Number of nodes in graph.")
+    parser.add_argument('edge_chance', type=float, help="Chance to spawn edge for two nodes. This basically means that there will be approx. (n*n*edge_chance) edges in the graph.")
     parser.add_argument('output_file', help="Output file.")
     parser.add_argument('-s', '--start_node', type=int, help="Start node index.")
     parser.add_argument('-e', '--end_node', type=int, help="End node index.")
@@ -54,7 +55,7 @@ if __name__ == '__main__':
         # Воспроизводимый рандом
         random.seed(args.key)
 
-    matrix = generate_graph_matrix(args.nodes)
+    matrix = generate_graph_matrix(args.nodes, args.edge_chance)
 
     start_node = args.start_node or 1
     end_node = args.end_node or (args.nodes - 1)
